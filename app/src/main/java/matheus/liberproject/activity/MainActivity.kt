@@ -1,7 +1,8 @@
-package matheus.liberproject
+package matheus.liberproject.activity
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import matheus.liberproject.R
 
 class MainActivity : AppCompatActivity() {
 
