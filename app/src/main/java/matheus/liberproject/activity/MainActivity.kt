@@ -1,16 +1,19 @@
 package matheus.liberproject.activity
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_main.*
 import matheus.liberproject.R
 import matheus.liberproject.adapter.MovieListAdapter
 import matheus.liberproject.model.Movie
+import matheus.liberproject.model.MovieResponse
 import matheus.liberproject.network.RetrofitInitializer
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+
+const val MY_KEY = "f34b3213"
 
 class MainActivity : AppCompatActivity() {
 
@@ -34,19 +37,20 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun callMovies() {
-        val call = RetrofitInitializer().omdbService().movies("a")
-        call.enqueue(object: Callback<List<Movie>> {
-            override fun onResponse(call: Call<List<Movie>?>?, response: Response<List<Movie>?>?) {
+        val call = RetrofitInitializer().omdbService().movies(MY_KEY,"titanic")
+        call.enqueue(object: Callback<MovieResponse> {
+            override fun onResponse(call: Call<MovieResponse>?, response: Response<MovieResponse>?) {
                 response?.body()?.let {
-                    mMovies = it.subList(0, 99)
+                    mMovies = it.Search
                     mAdapter.movies = mMovies
                     if (swipeRefresh.isRefreshing)
                         swipeRefresh.isRefreshing = false
                 }
             }
 
-            override fun onFailure(call: Call<List<Movie>?>?, t: Throwable?) {
-                Toast.makeText(this@MainActivity, "Problem receiving data", Toast.LENGTH_LONG).show()
+            override fun onFailure(call: Call<MovieResponse>?, t: Throwable?) {
+                Toast.makeText(this@MainActivity, "Problem receiving data",
+                    Toast.LENGTH_LONG).show()
                 if (swipeRefresh.isRefreshing)
                     swipeRefresh.isRefreshing = false
             }

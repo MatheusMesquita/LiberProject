@@ -1,22 +1,19 @@
 package matheus.liberproject.adapter
 
 import android.content.Context
-import android.content.res.Resources
-import android.graphics.drawable.BitmapDrawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory
 import androidx.recyclerview.widget.DiffUtil
 import com.squareup.picasso.Picasso
 import matheus.liberproject.R
 import matheus.liberproject.model.Movie
-import kotlin.math.max
 import kotlin.properties.Delegates
 
-class MovieListAdapter(val context: Context) : androidx.recyclerview.widget.RecyclerView.Adapter<MovieListAdapter.MovieHolder>() {
+class MovieListAdapter(private val context: Context) : androidx.recyclerview.widget.RecyclerView.
+Adapter<MovieListAdapter.MovieHolder>() {
 
     var movies: List<Movie> by Delegates.observable(emptyList()) { _, oldList, newList ->
         autoNotify(oldList, newList) { (id), (id1) -> id == id1 }
@@ -25,21 +22,9 @@ class MovieListAdapter(val context: Context) : androidx.recyclerview.widget.Recy
     private fun setImage(movie: Movie, holder: MovieHolder) {
         Picasso
             .get()
-            .load(movie.cover)
+            .load(movie.Poster)
             .placeholder(R.drawable.placeholder)
-            .into(holder.imgUser, object : com.squareup.picasso.Callback {
-                override fun onSuccess() {
-                    val imageBitmap = (holder.imgUser.drawable as BitmapDrawable).bitmap
-                    val imageDrawable = RoundedBitmapDrawableFactory.create(Resources.getSystem(), imageBitmap)
-                    imageDrawable.isCircular = true
-                    imageDrawable.cornerRadius = max(imageBitmap.width, imageBitmap.height) / 2.0f
-                    holder.imgUser.setImageDrawable(imageDrawable)
-                }
-
-                override fun onError(e: Exception?) {
-                    holder.imgUser.setImageResource(R.drawable.placeholder)
-                }
-            })
+            .into(holder.imgUser)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MovieHolder {
@@ -60,13 +45,13 @@ class MovieListAdapter(val context: Context) : androidx.recyclerview.widget.Recy
                     setImage(movie, holder)
 
                 if (itemChangeList.contains("name_update"))
-                    holder.txtName.text = movie.name
+                    holder.txtName.text = movie.Title
 
                 if (itemChangeList.contains("release_update"))
-                    holder.txtYear.text = movie.released
+                    holder.txtYear.text = movie.Year
 
                 if (itemChangeList.contains("rating_update"))
-                    holder.txtRating.text = movie.imdbRating.toString()
+                    holder.txtRating.text = movie.imdbID
             }
         }
     }
@@ -75,9 +60,9 @@ class MovieListAdapter(val context: Context) : androidx.recyclerview.widget.Recy
         val movie = movies[position]
 
         setImage(movie, holder)
-        holder.txtName.text = movie.name
-        holder.txtYear.text = movie.released
-        holder.txtRating.text = movie.imdbRating.toString()
+        holder.txtName.text = movie.Title
+        holder.txtYear.text = movie.Year
+        holder.txtRating.text = movie.imdbID
 
         holder.card.setOnClickListener {
             //TODO Redirect to movie info
@@ -108,10 +93,10 @@ fun androidx.recyclerview.widget.RecyclerView.Adapter<*>.autoNotify(oldList: Lis
             val oldItem = oldList[oldItemPosition]
             val newItem = newList[newItemPosition]
 
-            return (oldItem.cover == newItem.cover &&
-                    oldItem.name == newItem.name &&
-                    oldItem.released == newItem.released &&
-                    oldItem.imdbRating == newItem.imdbRating)
+            return (oldItem.Poster == newItem.Poster &&
+                    oldItem.Title == newItem.Title &&
+                    oldItem.Year == newItem.Year &&
+                    oldItem.imdbID == newItem.imdbID)
         }
 
         override fun getChangePayload(oldItemPosition: Int, newItemPosition: Int): Any? {
@@ -119,10 +104,10 @@ fun androidx.recyclerview.widget.RecyclerView.Adapter<*>.autoNotify(oldList: Lis
             val newItem = newList[newItemPosition]
             val itemChangeList = ArrayList<String>()
 
-            if (oldItem.cover == newItem.cover) itemChangeList.add("img_update")
-            if (oldItem.name == newItem.name) itemChangeList.add("name_update")
-            if (oldItem.released == newItem.released) itemChangeList.add("release_update")
-            if (oldItem.imdbRating == newItem.imdbRating) itemChangeList.add("rating_update")
+            if (oldItem.Poster == newItem.Poster) itemChangeList.add("img_update")
+            if (oldItem.Title == newItem.Title) itemChangeList.add("name_update")
+            if (oldItem.Year == newItem.Year) itemChangeList.add("release_update")
+            if (oldItem.imdbID == newItem.imdbID) itemChangeList.add("rating_update")
 
             return itemChangeList
         }

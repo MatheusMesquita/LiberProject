@@ -1,5 +1,6 @@
 package matheus.liberproject.model
 
-data class Movie(val name: String, val released: String, val imdbRating: Float,
-                 val nationality: String, val synopsis: String, val cover: String,
-                 val duration: String, val evaluation: String)
+data class MovieResponse(val Search: List<Movie>, val Response: String, val totalResults: String)
+
+data class Movie(val Title: String, val Year: String, val imdbID: String, val Type: String,
+                 val Poster: String)
