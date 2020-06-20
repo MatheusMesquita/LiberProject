@@ -24,6 +24,8 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        title = "IMDB"
+
         mMovies = emptyList()
         swipeRefresh.isRefreshing = true
         callMovies()
@@ -37,7 +39,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun callMovies() {
-        val call = RetrofitInitializer().omdbService().movies(MY_KEY,"titanic")
+        val call = RetrofitInitializer().omdbService().movies(MY_KEY,"Fast")
         call.enqueue(object: Callback<MovieResponse> {
             override fun onResponse(call: Call<MovieResponse>?, response: Response<MovieResponse>?) {
                 response?.body()?.let {
