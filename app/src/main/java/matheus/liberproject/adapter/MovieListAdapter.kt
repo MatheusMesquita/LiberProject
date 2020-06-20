@@ -4,37 +4,37 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
 import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
+import kotlinx.android.synthetic.main.movie_item.view.*
 import matheus.liberproject.R
 import matheus.liberproject.model.Movie
 import kotlin.properties.Delegates
 
-class MovieListAdapter(private val context: Context) : androidx.recyclerview.widget.RecyclerView.
-Adapter<MovieListAdapter.MovieHolder>() {
+class MovieListAdapter(private val context: Context) :
+    RecyclerView.Adapter<MovieListAdapter.ViewHolder>() {
 
     var movies: List<Movie> by Delegates.observable(emptyList()) { _, oldList, newList ->
         autoNotify(oldList, newList) { (id), (id1) -> id == id1 }
     }
 
-    private fun setImage(movie: Movie, holder: MovieHolder) {
+    private fun setImage(movie: Movie, holder: ViewHolder) {
         Picasso
             .get()
             .load(movie.Poster)
             .placeholder(R.drawable.placeholder)
-            .into(holder.imgUser)
+            .into(holder.view.imgUser)
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MovieHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view: View = LayoutInflater.from(context).inflate(R.layout.movie_item, parent, false)
-        return MovieHolder(view)
+        return ViewHolder(view)
     }
 
     override fun getItemCount() = movies.size
 
-    override fun onBindViewHolder(holder: MovieHolder, position: Int, payloads: MutableList<Any>) {
+    override fun onBindViewHolder(holder: ViewHolder, position: Int, payloads: MutableList<Any>) {
         if (payloads.isEmpty())
             onBindViewHolder(holder, position)
         else {
@@ -45,40 +45,33 @@ Adapter<MovieListAdapter.MovieHolder>() {
                     setImage(movie, holder)
 
                 if (itemChangeList.contains("name_update"))
-                    holder.txtName.text = movie.Title
+                    holder.view.txtName.text = movie.Title
 
                 if (itemChangeList.contains("release_update"))
-                    holder.txtYear.text = movie.Year
+                    holder.view.txtYear.text = movie.Year
 
                 if (itemChangeList.contains("rating_update"))
-                    holder.txtRating.text = movie.imdbID
+                    holder.view.txtRating.text = movie.imdbID
             }
         }
     }
 
-    override fun onBindViewHolder(holder: MovieHolder, position: Int) {
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val movie = movies[position]
 
         setImage(movie, holder)
-        holder.txtName.text = movie.Title
-        holder.txtYear.text = movie.Year
-        holder.txtRating.text = movie.imdbID
+        holder.view.txtName.text = movie.Title
+        holder.view.txtYear.text = movie.Year
 
-        holder.card.setOnClickListener {
+        holder.view.cardMovie.setOnClickListener {
             //TODO Redirect to movie info
         }
     }
 
-    inner class MovieHolder(itemView: View) : androidx.recyclerview.widget.RecyclerView.ViewHolder(itemView) {
-        var card: androidx.cardview.widget.CardView = itemView.findViewById(R.id.cardMovie)
-        var imgUser: ImageView = itemView.findViewById(R.id.imgUser)
-        var txtName: TextView = itemView.findViewById(R.id.txtName)
-        var txtYear: TextView = itemView.findViewById(R.id.txtYear)
-        var txtRating: TextView = itemView.findViewById(R.id.txtRating)
-    }
+    class ViewHolder(val view: View) : RecyclerView.ViewHolder(view)
 }
 
-fun androidx.recyclerview.widget.RecyclerView.Adapter<*>.autoNotify(oldList: List<Movie>, newList: List<Movie>, compare: (Movie, Movie) -> Boolean) {
+fun RecyclerView.Adapter<*>.autoNotify(oldList: List<Movie>, newList: List<Movie>, compare: (Movie, Movie) -> Boolean) {
 
     val diff = DiffUtil.calculateDiff(object : DiffUtil.Callback() {
 
