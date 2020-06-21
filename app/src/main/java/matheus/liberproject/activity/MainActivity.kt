@@ -1,6 +1,7 @@
 package matheus.liberproject.activity
 
 import android.os.Bundle
+import android.view.Menu
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -41,6 +42,12 @@ class MainActivity : AppCompatActivity() {
         )
 
         swipeRefresh.setOnRefreshListener { callMovies() }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.options_menu, menu)
+
+        return true
     }
 
     private fun callMovies() {
