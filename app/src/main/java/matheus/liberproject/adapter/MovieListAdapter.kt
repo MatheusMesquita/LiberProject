@@ -1,6 +1,7 @@
 package matheus.liberproject.adapter
 
 import android.content.Context
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.movie_item.view.*
 import matheus.liberproject.R
+import matheus.liberproject.activity.MovieDetailsActivity
 import matheus.liberproject.model.Movie
 import kotlin.properties.Delegates
 
@@ -24,7 +26,7 @@ class MovieListAdapter(private val context: Context) :
             .get()
             .load(movie.Poster)
             .placeholder(R.drawable.placeholder)
-            .into(holder.view.imgUser)
+            .into(holder.view.imgMovie)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -49,9 +51,6 @@ class MovieListAdapter(private val context: Context) :
 
                 if (itemChangeList.contains("release_update"))
                     holder.view.txtYear.text = movie.Year
-
-                if (itemChangeList.contains("rating_update"))
-                    holder.view.txtRating.text = movie.imdbID
             }
         }
     }
@@ -64,7 +63,10 @@ class MovieListAdapter(private val context: Context) :
         holder.view.txtYear.text = movie.Year
 
         holder.view.cardMovie.setOnClickListener {
-            //TODO Redirect to movie info
+            val intent = Intent(context, MovieDetailsActivity::class.java)
+            intent.putExtra("movie_id", movie.imdbID)
+
+            context.startActivity(intent)
         }
     }
 
@@ -100,7 +102,6 @@ fun RecyclerView.Adapter<*>.autoNotify(oldList: List<Movie>, newList: List<Movie
             if (oldItem.Poster == newItem.Poster) itemChangeList.add("img_update")
             if (oldItem.Title == newItem.Title) itemChangeList.add("name_update")
             if (oldItem.Year == newItem.Year) itemChangeList.add("release_update")
-            if (oldItem.imdbID == newItem.imdbID) itemChangeList.add("rating_update")
 
             return itemChangeList
         }
