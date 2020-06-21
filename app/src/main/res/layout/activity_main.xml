@@ -4,7 +4,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#e4e4e4"
+    android:paddingStart="24dp"
+    android:paddingLeft="24dp"
+    android:paddingEnd="24dp"
+    android:paddingRight="24dp"
+    android:background="@color/gray"
     tools:context=".activity.MainActivity">
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -15,6 +19,7 @@
         <androidx.recyclerview.widget.RecyclerView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:clipToPadding="false"
             android:id="@+id/rvMoviesList"/>
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
