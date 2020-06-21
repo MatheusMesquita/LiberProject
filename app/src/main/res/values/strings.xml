@@ -1,6 +1,9 @@
 <resources>
     <string name="app_name">Project</string>
 
+    <!-- Search Menu -->
+    <string name="search">Search</string>
+
     <!-- Movie Details -->
-    <string name="movie_name">Filme</string>
+    <string name="movie_name">Movie</string>
 </resources>

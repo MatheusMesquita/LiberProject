@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Project</string>
+
+    <!-- Search Menu -->
+    <string name="search">Pesquisar</string>
+
+    <!-- Movie Details -->
+    <string name="movie_name">Filme</string>
+</resources>
