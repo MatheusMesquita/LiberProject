@@ -4,6 +4,7 @@
 
     <!-- Search Menu -->
     <string name="search">Pesquisar</string>
+    <string name="search_hint">Digite seu filme</string>
 
     <!-- Movie Details -->
     <string name="movie_name">Filme</string>

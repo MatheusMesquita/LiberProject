@@ -3,6 +3,7 @@
 
     <!-- Search Menu -->
     <string name="search">Search</string>
+    <string name="search_hint">Type your movie</string>
 
     <!-- Movie Details -->
     <string name="movie_name">Movie</string>

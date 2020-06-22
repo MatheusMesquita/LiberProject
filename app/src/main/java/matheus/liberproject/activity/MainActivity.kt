@@ -1,7 +1,10 @@
 package matheus.liberproject.activity
 
+import android.app.SearchManager
+import android.content.Context
 import android.os.Bundle
 import android.view.Menu
+import android.widget.SearchView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -30,43 +33,54 @@ class MainActivity : AppCompatActivity() {
         title = "IMDB"
 
         mMovies = emptyList()
-        swipeRefresh.isRefreshing = true
-        callMovies()
 
-        mAdapter = MovieListAdapter(this@MainActivity)
-        mAdapter.movies = mMovies
-        rvMoviesList.adapter = mAdapter
         rvMoviesList.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(this@MainActivity)
         rvMoviesList.addItemDecoration(
             CustomDividerItem(ContextCompat.getDrawable(this, R.drawable.divider)!!)
         )
-
-        swipeRefresh.setOnRefreshListener { callMovies() }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.options_menu, menu)
 
+        val searchManager = getSystemService(Context.SEARCH_SERVICE) as SearchManager
+        (menu.findItem(R.id.search).actionView as SearchView).apply {
+            setSearchableInfo(searchManager.getSearchableInfo(componentName))
+            isIconifiedByDefault = false
+            setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+                override fun onQueryTextSubmit(query: String?): Boolean {
+                    callMovies(query!!)
+                    return false
+                }
+
+                override fun onQueryTextChange(query: String?): Boolean {
+                    callMovies(query!!)
+                    return false
+                }
+            })
+        }
+
         return true
     }
 
-    private fun callMovies() {
-        val call = RetrofitInitializer().omdbService().movies(MY_KEY,"Fast")
+    private fun callMovies(movie: String) {
+        val call = RetrofitInitializer().omdbService().movies(MY_KEY, movie)
         call.enqueue(object: Callback<MovieResponse> {
-            override fun onResponse(call: Call<MovieResponse>?, response: Response<MovieResponse>?) {
-                response?.body()?.let {
-                    mMovies = it.Search
-                    mAdapter.movies = mMovies
-                    if (swipeRefresh.isRefreshing)
-                        swipeRefresh.isRefreshing = false
+            override fun onResponse(call: Call<MovieResponse>, response: Response<MovieResponse>) {
+                if (response.isSuccessful &&
+                    response.body() != null &&
+                    response.body()!!.Search != null &&
+                    response.body()!!.Search!!.isNotEmpty()) {
+                    mMovies = response.body()!!.Search!!
+                    mAdapter = MovieListAdapter(this@MainActivity, mMovies)
+                    rvMoviesList.adapter = mAdapter
+                    mAdapter.notifyDataSetChanged()
                 }
             }
 
-            override fun onFailure(call: Call<MovieResponse>?, t: Throwable?) {
+            override fun onFailure(call: Call<MovieResponse>, t: Throwable?) {
                 Toast.makeText(this@MainActivity, "Problem receiving data",
                     Toast.LENGTH_LONG).show()
-                if (swipeRefresh.isRefreshing)
-                    swipeRefresh.isRefreshing = false
             }
         })
     }
